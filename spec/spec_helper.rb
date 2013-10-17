@@ -1,7 +1,17 @@
 # Set up Rails environment
 ENV['RAILS_ENV'] = 'test'
 require File.expand_path('../dummy/config/environment.rb',  __FILE__)
+require 'rake'
+
+# Auto-create test DB
+Rake::Task.clear
+Rails.application.load_tasks
+Rake::Task['db:test:prepare'].invoke
+
 require 'rails/test_help'
+require 'fabrication'
+require 'ffaker'
+require 'database_cleaner'
 require 'has_cache'
 
 Rails.backtrace_cleaner.remove_silencers!
@@ -22,4 +32,16 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
+
+  # Clean database when testing
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
 end
