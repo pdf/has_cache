@@ -4,14 +4,11 @@ rescue LoadError
   puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
 end
 
-# RDoc
-require 'rdoc/task'
-RDoc::Task.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'HasCache'
-  rdoc.options << '--line-numbers'
-  rdoc.rdoc_files.include('README.rdoc')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+# Yard
+require 'yard'
+YARD::Rake::YardocTask.new do |t|
+  t.files   = %w{lib/**/*.rb}
+  t.options = %w{--protected --private --readme README.md --files README.md,CONTRIBUTING.md}
 end
 
 # Gems

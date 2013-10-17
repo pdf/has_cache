@@ -18,4 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails', '>= 3.1'
   s.add_development_dependency 'rspec-rails', '~> 2.14'
   s.add_development_dependency 'rubocop'
+  s.add_development_dependency 'yard'
+  s.add_development_dependency 'yard-rspec'
+  s.add_development_dependency 'yard-rails'
 end
