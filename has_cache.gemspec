@@ -1,4 +1,4 @@
-$:.push File.expand_path('../lib', __FILE__)
+$LOAD_PATH.push File.expand_path('../lib', __FILE__)
 
 # Maintain your gem's version:
 require 'has_cache/version'
@@ -11,9 +11,18 @@ Gem::Specification.new do |s|
   s.email       = ['ruby@0xc0dedbad.com']
   s.homepage    = 'http://rubygems.org/gems/has_cache'
   s.summary     = 'Adds easy to access Rails caching to any class'
-  s.description = 'Using `has_cache` in your classes provides a `cached` method that allows chaining of a method that is normally available on the class, and automatically caching the result.'
+  s.description = <<-eos
+    Using `has_cache` in your classes provides a `cached` method that allows
+    chaining of a method that is normally available on the class, and
+    automatically caching the result.'
+  eos
 
-  s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']
+  s.files = Dir[
+    '{app,config,db,lib}/**/*',
+    'MIT-LICENSE',
+    'Rakefile',
+    'README.rdoc'
+  ]
 
   s.add_dependency 'rails', '>= 3.1'
   s.add_development_dependency 'rspec-rails', '~> 2.14'
@@ -25,4 +34,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'ffaker'
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'database_cleaner'
+  s.add_development_dependency 'guard', '~> 2.0'
+  s.add_development_dependency 'guard-rspec', '~> 4.0'
+  s.add_development_dependency 'guard-rubocop', '~> 1.0'
 end

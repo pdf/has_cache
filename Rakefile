@@ -18,7 +18,7 @@ Bundler::GemHelper.install_tasks
 require 'rubocop/rake_task'
 desc 'Run RuboCop on the lib directory'
 Rubocop::RakeTask.new(:rubocop) do |task|
-  task.patterns = ['lib/**/*.rb']
+  task.patterns = ['lib/**/*.rb', 'spec/spec_helper.rb', 'spec/*/*.rb']
 end
 
 # RSpec
