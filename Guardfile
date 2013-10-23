@@ -2,16 +2,17 @@
 # More info at https://github.com/guard/guard#readme
 
 guard :rspec do
-  watch(%r{^spec/.+_spec\.rb$})
-  watch(%r{^fabricators/.+_fabricator\.rb$})
+  ignore(%r{^spec/dummy/.*$})
   watch('spec/spec_helper.rb')  { 'spec' }
+  watch(%r{^lib/.*\.rb$}) { 'spec' }
+  watch(%r{^spec/.+_spec\.rb$})
+  watch(%r{^spec/.+_fabricator\.rb$})
 end
 
-=begin
-guard :rubocop, cli: ['lib/**/*.rb', 'spec/spec_helper.rb', 'spec/*/*.rb'] do
-  watch('lib/**/*.rb')
+guard :rubocop, all_on_start: false do
+  ignore(%r{^spec/dummy/.*$})
   watch('spec/spec_helper.rb')
-  watch('spec/*/*.rb')
-  watch(%r{(?:.+/)?\.rubocop\.yml$}) { |m| File.dirname(m[0]) }
+  watch(%r{^lib/.*\.rb$})
+  watch(%r{^spec/.*\.rb$})
+  watch(%r{^\.rubocop\.yml$})
 end
-=end

@@ -27,6 +27,8 @@ module Dummy
       g.test_framework      :rspec, fixtures: true
       g.fixture_replacement :fabrication
     end
+
+    config.cache_store = :memory_store
   end
 end
 

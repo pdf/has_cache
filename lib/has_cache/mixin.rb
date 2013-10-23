@@ -12,18 +12,18 @@ module HasCache
         cattr_accessor :has_cache_options
 
         options = args.extract_options!
-        self.has_cache_options = options
+        self.has_cache_options = options || {}
 
-        include HasCache::Mixin::CachedMethod
         extend HasCache::Mixin::CachedMethod
+        include HasCache::Mixin::CachedMethod
       end
     end
 
     # Contains the cached method for proxying calls through
     # HasCache::Cache, on both classes and instances.
     module CachedMethod
-      def cached(*args)
-        HasCache::Cache.new(self, *args)
+      def cached(*args, &block)
+        HasCache::Cache.new(self, *args, &block)
       end
     end
   end

@@ -1,3 +1,4 @@
+require 'has_cache/utilities'
 require 'has_cache/mixin'
 require 'has_cache/cache'
 

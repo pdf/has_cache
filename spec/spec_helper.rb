@@ -33,6 +33,11 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = 'random'
 
+  # Only accept new 'expect' syntax
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
+
   # Clean database when testing
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction

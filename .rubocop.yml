@@ -1,2 +1,12 @@
+AllCops:
+  Excludes:
+    - spec/dummy/**
+
 RegexpLiteral:
   Enabled: false
+
+Lambda:
+  Enabled: false
+
+MethodLength:
+  Max: 25

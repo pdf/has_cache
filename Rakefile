@@ -5,10 +5,17 @@ rescue LoadError
 end
 
 # Yard
+ENV['YARD_USER'] = 'pdf'
+ENV['YARD_PROJECT'] = 'has_cache'
 require 'yard'
+require 'yard-rails'
+require 'yard-blame'
 YARD::Rake::YardocTask.new do |t|
   t.files   = %w{lib/**/*.rb}
-  t.options = %w{--protected --private --readme README.md --files README.md,CONTRIBUTING.md}
+  t.options = %w{--protected --private --readme README.md
+                 --markup markdown --markup-provider redcarpet
+                 --plugin rails --plugin blame
+                 --files README.md,CONTRIBUTING.md}
 end
 
 # Gems
@@ -16,13 +23,11 @@ Bundler::GemHelper.install_tasks
 
 # RuboCop
 require 'rubocop/rake_task'
-desc 'Run RuboCop on the lib directory'
-Rubocop::RakeTask.new(:rubocop) do |task|
-  task.patterns = ['lib/**/*.rb', 'spec/spec_helper.rb', 'spec/*/*.rb']
-end
+Rubocop::RakeTask.new(:rubocop)
 
 # RSpec
 require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec)
 
+task doc: :yard
 task default: :spec
