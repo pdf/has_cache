@@ -9,12 +9,12 @@ Gem::Specification.new do |s|
   s.version     = HasCache::VERSION
   s.authors     = ['Peter Fern']
   s.email       = ['ruby@0xc0dedbad.com']
-  s.homepage    = 'http://rubygems.org/gems/has_cache'
+  s.homepage    = 'https://github.com/pdf/has_cache'
   s.summary     = 'Convenience wrapper for the Rails Cache Store'
   s.description = <<-eos
     Using `has_cache` in your classes provides a `cached` method that allows
-    automatic caching the result of a method that is normally available on the
-    class, or an instance of the class.
+    automatic caching of the result of a method that is normally available on
+    the class, or an instance of the class.
 
     It mitigates the hassle of creating and tracking keys as you would with
     the standard Cache Store interface, by inferring keys from the location

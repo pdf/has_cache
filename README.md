@@ -2,8 +2,8 @@
 Convenience wrapper for the [Rails Cache Store](http://guides.rubyonrails.org/caching_with_rails.html#cache-stores)
 
 Using `has_cache` in your classes provides a `cached` method that allows
-automatic caching the result of a method that is normally available on the
-class, or an instance of the class.
+automatic caching of the result of a method that is normally available on
+the class, or an instance of the class.
 
 It mitigates the hassle of creating and tracking keys as you would with
 the standard Cache Store interface, by inferring keys from the location
