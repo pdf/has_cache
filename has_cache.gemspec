@@ -10,11 +10,15 @@ Gem::Specification.new do |s|
   s.authors     = ['Peter Fern']
   s.email       = ['ruby@0xc0dedbad.com']
   s.homepage    = 'http://rubygems.org/gems/has_cache'
-  s.summary     = 'Adds easy to access Rails caching to any class'
+  s.summary     = 'Convenience wrapper for the Rails Cache Store'
   s.description = <<-eos
     Using `has_cache` in your classes provides a `cached` method that allows
-    chaining of a method that is normally available on the class, and
-    automatically caching the result.'
+    automatic caching the result of a method that is normally available on the
+    class, or an instance of the class.
+
+    It mitigates the hassle of creating and tracking keys as you would with
+    the standard Cache Store interface, by inferring keys from the location
+    `cached` is invoked.
   eos
 
   s.files = Dir[
