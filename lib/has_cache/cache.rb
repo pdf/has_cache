@@ -14,7 +14,7 @@ module HasCache
       o.__send__(:initialize, *args, &block)
       return o unless block_given?
 
-      key = o.generate_cache_key
+      key = o.cache_key
       begin
         block_source = block.to_source(ignore_nested: true)
       rescue => e
@@ -65,7 +65,7 @@ module HasCache
       end
     end
 
-    def generate_cache_key
+    def cache_key
       key = cache_root
       if cache_options.key?(:key)
         options_key = cache_options.delete(:key)
@@ -87,7 +87,7 @@ module HasCache
     private
 
       def method_missing(method, *args)
-        key = generate_cache_key
+        key = cache_key
         unless cache_options.delete(:canonical_key)
           key += [method]
           key += args unless args.empty?
