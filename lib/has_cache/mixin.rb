@@ -3,9 +3,6 @@ module HasCache
   module Mixin
     extend ActiveSupport::Concern
 
-    included do
-    end
-
     # Mixin class methods
     module ClassMethods
       def has_cache(*args)
@@ -23,6 +20,11 @@ module HasCache
     # HasCache::Cache, on both classes and instances.
     module CachedMethod
       def cached(*args, &block)
+        HasCache::Cache.new(self, *args, &block)
+      end
+
+      def delete_cached(*args, &block)
+        args.push :delete => true
         HasCache::Cache.new(self, *args, &block)
       end
     end

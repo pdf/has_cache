@@ -10,6 +10,7 @@ the standard Cache Store interface, by inferring keys from the location
 `cached` is invoked.
 
 ## Usage
+### Enable caching on your class/model
 Include `has_cache` in your Rails project's `Gemfile`:
 
 ```ruby
@@ -30,7 +31,8 @@ class Post < ActiveRecord::Base
 end
 ```
 
-Now you can call:
+### Populate and retrieve cached entities
+Having enabled caching on your class, you can call:
 
 ```ruby
 user = User.first
@@ -55,6 +57,21 @@ as follows:
 first_user = User.first
 first_users_first_post = user.cached{ posts.first }
 ```
+
+### Delete cached entities
+To delete cached entities, simply replace the `cached` method with `delete_cached`:
+
+```ruby
+user = User.first
+# Cache some entities
+user_posts = user.cached.posts
+# Delete the cache
+user.delete_cached.posts
+```
+
+The `delete_cached` method takes all the same arguments as the `cached` method, and
+to ensure that the correct cache key is deleted, you must pass the exact same
+arguments, and chain the same methods, as the original call to `cached`.
 
 ## Options
 ### Cache options
@@ -220,7 +237,6 @@ better solution at this stage.
 - Documentation - the code is appallingly light on comments
 - Block parsing using `sourcify` seems like a really hacky solution, would
   welcome pull requests for a better solution.
-- Implement cache deletion via an argument to `cached`.
 
 # License
 This project rocks and uses the `MIT-LICENSE`.

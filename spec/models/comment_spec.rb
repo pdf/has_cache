@@ -11,8 +11,12 @@ describe Comment do
   it 'should not respond to ::cached' do
     should_not respond_to(:cached)
   end
+  it 'should not respond to ::delete_cached' do
+    should_not respond_to(:delete_cached)
+  end
   describe 'instance' do
     subject { Fabricate(:comment) }
     it { should_not respond_to(:cached) }
+    it { should_not respond_to(:delete_cached) }
   end
 end

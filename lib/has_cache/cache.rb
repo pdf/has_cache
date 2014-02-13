@@ -27,13 +27,17 @@ module HasCache
       unless o.cache_options.delete(:canonical_key) || block_source.nil?
         key += [block_source]
       end
-      Rails.cache.fetch(key, o.cache_options) do
-        if o.target.is_a?(Class)
-          result = o.target.class_eval(&block)
-        else
-          result = o.target.instance_eval(&block)
+      if o.cache_options.delete(:delete)
+        Rails.cache.delete(key)
+      else
+        Rails.cache.fetch(key, o.cache_options) do
+          if o.target.is_a?(Class)
+            result = o.target.class_eval(&block)
+          else
+            result = o.target.instance_eval(&block)
+          end
+          extract_result(result)
         end
-        extract_result(result)
       end
     end
 
@@ -88,8 +92,12 @@ module HasCache
           key += [method]
           key += args unless args.empty?
         end
-        Rails.cache.fetch(key, cache_options) do
-          extract_result(target.send(method, *args))
+        if cache_options.delete(:delete)
+          Rails.cache.delete(key)
+        else
+          Rails.cache.fetch(key, cache_options) do
+            extract_result(target.send(method, *args))
+          end
         end
       end
 
