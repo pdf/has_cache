@@ -1,13 +1,13 @@
 require 'sourcify'
 
 module HasCache
-  # The cache class proxies calls to the original target, caching the results,
-  # and returns the cached results if passed the same target and arguments
+  # The cache class proxies calls to the original cache_target, caching the results,
+  # and returns the cached results if passed the same cache_target and arguments
   class Cache
     extend HasCache::Utilities
     include HasCache::Utilities
 
-    attr_accessor :target, :cache_root, :cache_options
+    attr_accessor :cache_target, :cache_root, :cache_options
 
     def self.new(*args, &block)
       o = allocate
@@ -31,34 +31,34 @@ module HasCache
         Rails.cache.delete(key)
       else
         Rails.cache.fetch(key, o.cache_options) do
-          if o.target.is_a?(Class)
-            result = o.target.class_eval(&block)
+          if o.cache_target.is_a?(Class)
+            result = o.cache_target.class_eval(&block)
           else
-            result = o.target.instance_eval(&block)
+            result = o.cache_target.instance_eval(&block)
           end
           extract_result(result)
         end
       end
     end
 
-    def initialize(target, options = {})
-      @target = target
+    def initialize(cache_target, options = {})
+      @cache_target = cache_target
       @cache_root = []
-      @cache_options = merged_options(target, options)
-      if target.is_a?(Class)
-        @cache_root = [target.name, :class]
+      @cache_options = merged_options(cache_target, options)
+      if cache_target.is_a?(Class)
+        @cache_root = [cache_target.name, :class]
       else
-        @cache_root = [target.class.name, :instance]
-        unless target.respond_to?(:has_cache_key)
-          if target.class.respond_to?(:primary_key)
-            @cache_root << target.send(target.class.send(:primary_key).to_sym)
-          elsif target.respond_to?(:id)
-            @cache_root << target.send(:id)
-          elsif target.respond_to?(:name)
-            @cache_root << target.send(:name)
+        @cache_root = [cache_target.class.name, :instance]
+        unless cache_target.respond_to?(:has_cache_key)
+          if cache_target.class.respond_to?(:primary_key)
+            @cache_root << cache_target.send(cache_target.class.send(:primary_key).to_sym)
+          elsif cache_target.respond_to?(:id)
+            @cache_root << cache_target.send(:id)
+          elsif cache_target.respond_to?(:name)
+            @cache_root << cache_target.send(:name)
           else
             # rubocop:disable LineLength, StringLiterals
-            fail ArgumentError, "Could not find key for instance of `#{target.class.name}`, must call with `instance.cached(key: some_unique_key).method`"
+            fail ArgumentError, "Could not find key for instance of `#{cache_target.class.name}`, must call with `instance.cached(key: some_unique_key).method`"
             # rubocop:enable LineLength, StringLiterals
           end
         end
@@ -70,16 +70,16 @@ module HasCache
       if cache_options.key?(:key)
         options_key = cache_options.delete(:key)
         if options_key.is_a?(Proc)
-          if target.is_a?(Class)
-            key += Array.wrap(target.class_eval(&options_key))
+          if cache_target.is_a?(Class)
+            key += Array.wrap(cache_target.class_eval(&options_key))
           else
-            key += Array.wrap(target.instance_eval(&options_key))
+            key += Array.wrap(cache_target.instance_eval(&options_key))
           end
         else
           key += Array.wrap(options_key)
         end
-      elsif target.respond_to?(:has_cache_key)
-        key += target.send(:has_cache_key)
+      elsif cache_target.respond_to?(:has_cache_key)
+        key += cache_target.send(:has_cache_key)
       end
       key
     end
@@ -96,13 +96,13 @@ module HasCache
           Rails.cache.delete(key)
         else
           Rails.cache.fetch(key, cache_options) do
-            extract_result(target.send(method, *args))
+            extract_result(cache_target.send(method, *args))
           end
         end
       end
 
       def respond_to?(method)
-        target.respond_to?(method)
+        cache_target.respond_to?(method)
       end
   end
 end
