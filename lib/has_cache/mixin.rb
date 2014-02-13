@@ -24,7 +24,7 @@ module HasCache
       end
 
       def delete_cached(*args, &block)
-        args.push :delete => true
+        args.push(delete: true)
         HasCache::Cache.new(self, *args, &block)
       end
     end

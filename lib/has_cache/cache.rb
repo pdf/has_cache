@@ -1,8 +1,9 @@
 require 'sourcify'
 
 module HasCache
-  # The cache class proxies calls to the original cache_target, caching the results,
-  # and returns the cached results if passed the same cache_target and arguments
+  # The cache class proxies calls to the original cache_target, caching the
+  # results, and returns the cached results if passed the same cache_target
+  # and arguments
   class Cache
     extend HasCache::Utilities
     include HasCache::Utilities
@@ -32,11 +33,10 @@ module HasCache
       else
         Rails.cache.fetch(key, o.cache_options) do
           if o.cache_target.is_a?(Class)
-            result = o.cache_target.class_eval(&block)
+            extract_result(o.cache_target.class_eval(&block))
           else
-            result = o.cache_target.instance_eval(&block)
+            extract_result(o.cache_target.instance_eval(&block))
           end
-          extract_result(result)
         end
       end
     end
@@ -49,28 +49,30 @@ module HasCache
         @cache_root = [cache_target.name, :class]
       else
         @cache_root = [cache_target.class.name, :instance]
-        unless cache_target.respond_to?(:has_cache_key)
-          if cache_target.class.respond_to?(:primary_key)
-            # Support composite primary keys
-            # TODO: spec this
-            primary_key = cache_target.class.send(:primary_key)
-            case primary_key
-            when String
-              @cache_root << cache_target.send(primary_key.to_sym)
-            when Array
-              @cache_root << primary_key.map { |k| cache_target.send(k.to_sym) }
-            else
-              raise "Unknown primary key type: #{primary_key.class}"
-            end
-          elsif cache_target.respond_to?(:id)
-            @cache_root << cache_target.send(:id)
-          elsif cache_target.respond_to?(:name)
-            @cache_root << cache_target.send(:name)
+
+        return if cache_target.respond_to?(:has_cache_key)
+
+        if cache_target.class.respond_to?(:primary_key)
+          primary_key = cache_target.class.send(:primary_key)
+
+          # Support composite primary keys
+          # TODO: spec this
+          case primary_key
+          when String
+            @cache_root << cache_target.send(primary_key.to_sym)
+          when Array
+            @cache_root << primary_key.map { |k| cache_target.send(k.to_sym) }
           else
-            # rubocop:disable LineLength, StringLiterals
-            fail ArgumentError, "Could not find key for instance of `#{cache_target.class.name}`, must call with `instance.cached(key: some_unique_key).method`"
-            # rubocop:enable LineLength, StringLiterals
+            fail "Unknown primary key type: #{primary_key.class}"
           end
+        elsif cache_target.respond_to?(:id)
+          @cache_root << cache_target.send(:id)
+        elsif cache_target.respond_to?(:name)
+          @cache_root << cache_target.send(:name)
+        else
+          # rubocop:disable LineLength, StringLiterals
+          fail ArgumentError, "Could not find key for instance of `#{cache_target.class.name}`, must call with `instance.cached(key: some_unique_key).method`"
+          # rubocop:enable LineLength, StringLiterals
         end
       end
     end
