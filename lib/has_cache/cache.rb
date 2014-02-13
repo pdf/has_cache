@@ -51,7 +51,17 @@ module HasCache
         @cache_root = [cache_target.class.name, :instance]
         unless cache_target.respond_to?(:has_cache_key)
           if cache_target.class.respond_to?(:primary_key)
-            @cache_root << cache_target.send(cache_target.class.send(:primary_key).to_sym)
+            # Support composite primary keys
+            # TODO: spec this
+            primary_key = cache_target.class.send(:primary_key)
+            case primary_key
+            when String
+              @cache_root << cache_target.send(primary_key.to_sym)
+            when Array
+              @cache_root << primary_key.map { |k| cache_target.send(k.to_sym) }
+            else
+              raise "Unknown primary key type: #{primary_key.class}"
+            end
           elsif cache_target.respond_to?(:id)
             @cache_root << cache_target.send(:id)
           elsif cache_target.respond_to?(:name)
