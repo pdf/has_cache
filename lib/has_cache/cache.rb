@@ -98,23 +98,23 @@ module HasCache
 
     private
 
-      def method_missing(method, *args)
-        key = cache_key
-        unless cache_options.delete(:canonical_key)
-          key += [method]
-          key += args unless args.empty?
-        end
-        if cache_options.delete(:delete)
-          Rails.cache.delete(key)
-        else
-          Rails.cache.fetch(key, cache_options) do
-            extract_result(cache_target.send(method, *args))
-          end
+    def method_missing(method, *args)
+      key = cache_key
+      unless cache_options.delete(:canonical_key)
+        key += [method]
+        key += args unless args.empty?
+      end
+      if cache_options.delete(:delete)
+        Rails.cache.delete(key)
+      else
+        Rails.cache.fetch(key, cache_options) do
+          extract_result(cache_target.send(method, *args))
         end
       end
+    end
 
-      def respond_to?(method)
-        cache_target.respond_to?(method)
-      end
+    def respond_to?(method)
+      cache_target.respond_to?(method)
+    end
   end
 end

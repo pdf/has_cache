@@ -57,7 +57,7 @@ describe User do
         it 'delivers correct arguments to the cache' do
           expect(Rails.cache).to receive(:fetch).with(
             key,
-            { expires_in: 1.day }
+            expires_in: 1.day
           )
           User.cached.all
         end
@@ -69,7 +69,7 @@ describe User do
         it 'delivers correct arguments to the cache' do
           expect(Rails.cache).to receive(:fetch).with(
             key,
-            { expires_in: 1.week }
+            expires_in: 1.week
           )
           User.cached(expires_in: 1.week).all
         end
@@ -129,7 +129,7 @@ describe User do
       it 'delivers correct arguments to the cache' do
         expect(Rails.cache).to receive(:fetch).with(
           key,
-          { expires_in: 1.day }
+          expires_in: 1.day
         )
         user.cached.articles
       end
@@ -140,7 +140,7 @@ describe User do
         it 'delivers correct arguments to the cache' do
           expect(Rails.cache).to receive(:fetch).with(
             key,
-            { expires_in: 1.week }
+            expires_in: 1.week
           )
           user.cached(expires_in: 1.week).articles
         end

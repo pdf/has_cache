@@ -1,6 +1,6 @@
 AllCops:
   Excludes:
-    - spec/dummy/**
+    - spec/dummy/**/*
 
 RegexpLiteral:
   Enabled: false
