@@ -16,17 +16,17 @@ module HasCache
       return o unless block_given?
 
       key = o.cache_key
-      begin
-        block_source = block.to_source(ignore_nested: true)
-      rescue => e
-        if key == o.cache_root
-          # rubocop:disable LineLength, StringLiterals
-          raise ArgumentError, "Could not generate key from block, must call with `.cached(key: some_unique_key) { block }` (#{e})"
-          # rubocop:enable LineLength, StringLiterals
+      unless o.cache_options.delete(:canonical_key)
+        begin
+          block_source = block.to_source(ignore_nested: true)
+        rescue Exception => e
+          if key == o.cache_root
+            # rubocop:disable LineLength, StringLiterals
+            raise ArgumentError, "Could not generate key from block, must call with `.cached(key: some_unique_key) { block }` (#{e})"
+            # rubocop:enable LineLength, StringLiterals
+          end
         end
-      end
-      unless o.cache_options.delete(:canonical_key) || block_source.nil?
-        key += [block_source]
+        key += [block_source] unless block_source.nil?
       end
       if o.cache_options.delete(:delete)
         Rails.cache.delete(key)
